@@ -1,12 +1,9 @@
 ﻿open  System.IO
 
-open Utils
-
 let readInput (day:int)  =
-    File.ReadAllText($"../../../inputs/day{day}.txt")
-    |> splitOn '\n'
-    |> List.ofArray
+    File.ReadLines($"../../../inputs/day{day}.txt")
+    |> List.ofSeq
 
-readInput 1
-|> Day1.Solve
+readInput 2
+|> Day2.Solve
 |> printf "%A"

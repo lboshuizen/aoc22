@@ -12,5 +12,9 @@ let splitWhen (pred:'a->bool) (xs: 'a list) =
     
     split xs [] [] |> List.rev |> List.map (List.rev)
 
-let both f1 f2 xs = (f1 xs, f2 xs)
+let both f g x = (f x, g x)
 
+let curry f a b = f (a,b)
+let uncurry f (a,b) = f a b
+
+let tOp = uncurry 

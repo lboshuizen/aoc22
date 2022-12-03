@@ -4,17 +4,12 @@ let priority = function
                | c when c >= 'a' && c <= 'z' -> (int c) - int('a') + 1
                | c -> (int c) - int('A') + 27
 
-let scan (xs:string) =
-    let (l,r) = xs |> List.ofSeq |> List.splitAt (xs.Length / 2)
-    List.find (flip List.contains r) l |> priority
+let parse (xs:string list)= xs |> List.map List.ofSeq
 
-let badge = function
-            | h::t -> let inOthers (b:char) = t |> List.forall (fun (s:string) -> s.Contains(b))
-                      h |> Seq.find inOthers |> priority
-            | _ -> failwith "oops"
+let findDuplicate = Seq.map Set >> Set.intersectMany >> Set.minElement >> priority
 
-let part1 = List.map scan >> List.sum
+let part1 = List.map (List.splitInto 2 >> findDuplicate) >> Seq.sum
 
-let part2 = List.chunkBySize 3 >> List.map badge  >> List.sum
+let part2 = List.chunkBySize 3 >> List.map findDuplicate >> Seq.sum
 
-let Solve = both part1 part2 
+let Solve = parse >> both part1 part2 

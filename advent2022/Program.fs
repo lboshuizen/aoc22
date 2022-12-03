@@ -1,9 +1,9 @@
 ﻿open  System.IO
 
 let readInput (day:int)  =
-    File.ReadLines($"../../../inputs/day{day}.txt")
-    |> List.ofSeq
+    let p = Path.Combine(__SOURCE_DIRECTORY__,"inputs",$"day{day}.txt")
+    File.ReadLines(p) |> List.ofSeq
 
-readInput 2
-|> Day2.Solve
+readInput 3
+|> Day3.Solve
 |> printf "%A"

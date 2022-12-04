@@ -6,7 +6,7 @@ let priority = function
 
 let parse (xs:string list)= xs |> List.map List.ofSeq
 
-let findDuplicate = Seq.map Set >> Set.intersectMany >> Set.minElement >> priority
+let findDuplicate = Seq.map Set >> Set.intersectMany >> Seq.head >> priority
 
 let part1 = List.map (List.splitInto 2 >> findDuplicate) >> Seq.sum
 

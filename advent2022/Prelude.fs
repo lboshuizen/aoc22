@@ -1,7 +1,7 @@
 [<Microsoft.FSharp.Core.AutoOpen>]
 module Prelude
 
-let splitOn (c:char) (s:string) = s.Split c
+let splitOn (c:char) (s:string) = s.Split c |> Seq.toList
 
 let reorder (xs:'a list list) = xs |> (List.map List.rev >> List.rev)
 

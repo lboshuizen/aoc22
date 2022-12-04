@@ -1,9 +1,10 @@
 module Day2
 
 let trans = function 
-           | "A" | "X" -> 1
-           | "B" | "Y" -> 2
-           | "C" | "Z" -> 3
+            | "A" | "X" -> 1
+            | "B" | "Y" -> 2
+            | "C" | "Z" -> 3
+            | _ -> failwith "Invalid pattern"
 
 let parse = List.map (splitOn ' ' >> fun a -> (trans a[0], trans a[1]))
 

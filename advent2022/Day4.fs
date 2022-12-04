@@ -1,23 +1,18 @@
 module Day4
 
 let parse =
-    let pair (h::t::_) = (h,t)
-    let line = splitOn ',' >> List.map (splitOn '-' >> List.map int >> pair) >> pair
+    let set (a:int[]) = Set [a[0]..a[1]]
+    let pair (a:'a[]) = (a[0],a[1])
+    let line = splitOn ',' >> Array.map (splitOn '-' >> Array.map int >> set) >> pair
     
     List.map line
 
-let check f = function
-              | l,r when f l r -> true
-              | l,r when f r l -> true
-              | _ -> false
+let check f (a,b) = f a b || f b a
 
-let part1 =
-    let contains (x,y) (x',y') = x >= x' && y <= y'
-            
-    List.filter (check contains) >> List.length
+let part1 = List.filter (check Set.isSubset) >> List.length
 
 let part2 =
-    let overlap (_,y) (x',y') = y >= x' && y <= y'    
+    let overlap l r = Set.intersect l r <> Set.empty     
 
     List.filter (check overlap)  >> List.length
 

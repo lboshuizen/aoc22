@@ -37,4 +37,9 @@ let both f g x = (f x, g x)
 let curry f a b = f (a,b)
 let uncurry f (a,b) = f a b
 
-let tOp = uncurry 
+let tOp = uncurry
+
+let mapSnd f (a,b) = (a, f b)
+let mapFst f (a,b) = (f a, b)
+
+let isDigit c = System.Char.IsDigit c

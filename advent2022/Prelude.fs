@@ -21,7 +21,7 @@ let splitWhen (pred:'a->bool) =
 
 /// <summary>Parse a string with pattern <c>regex</c> and transforms into result with <c>map</c></summary>
 /// <param name="pat">Pattern to match</param>
-/// <param name="map">Mapper (f:string[] -> 'a) to result</param>
+/// <param name="map">Mapper <c>(f:string[]->'a)</c> to result</param>
 /// <returns>result of <c>map</c></returns>
 /// <remarks>Does NOT adapt to failing matches, is expected to throw!</remarks>
 let parseRegex regex map s =  Regex.Match(s,regex) |> fun m -> m.Groups
@@ -29,6 +29,8 @@ let parseRegex regex map s =  Regex.Match(s,regex) |> fun m -> m.Groups
                               |> Seq.map (fun a -> a.Value) |> Array.ofSeq |> map
 
 let splitOnEmpty = splitWhen ((=)"")
+
+let toString (xs:seq<char>) = System.String.Concat xs
 
 let both f g x = (f x, g x)
 

@@ -11,6 +11,7 @@ let part1 = List.filter (check Set.isSubset) >> List.length
 let part2 =
     let overlap l r = Set.intersect l r <> Set.empty     
 
-    List.filter (check overlap)  >> List.length
-let Solve xs = xs |> parse |> both part1 part2
+    List.filter (check overlap) >> List.length
+    
+let Solve = parse >> both part1 part2
 

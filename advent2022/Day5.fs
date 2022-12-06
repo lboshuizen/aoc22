@@ -20,9 +20,9 @@ let move (f:'a list->'a list) (st:'a list[]) (n,src,dest) =
 let move9000 = move List.rev
 let move9001 = move id
 
-let part1 st = List.fold move9000 st >> Seq.map List.head >> toString
+let part1 st = foldl move9000 st >> Seq.map List.head >> toString
 
-let part2 st = List.fold move9001 st >> Seq.map List.head >> toString
+let part2 st = foldl move9001 st >> Seq.map List.head >> toString
 
 let Solve = parse >> both (uncurry part1) (uncurry part2)
 

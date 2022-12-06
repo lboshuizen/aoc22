@@ -1,9 +1,15 @@
-﻿open  System.IO
+﻿open System.Diagnostics
+open  System.IO
+open FSharpPlus.Data
+open FSharpPlus.GenericBuilders
 
-let readInput (day:int)  =
-    let p = Path.Combine(__SOURCE_DIRECTORY__,"inputs",$"day{day}.txt")
+let readInput (d:int)  =
+    let p = Path.Combine(__SOURCE_DIRECTORY__,"inputs",$"day{d}.txt")
     File.ReadLines(p) |> List.ofSeq
 
-readInput 5
-|> Day5.Solve
-|> printf "%A"
+let go f xs = monad { return f xs }        
+
+readInput 6
+|> fun xs -> State.run (go Day6.Solve xs) (Stopwatch.StartNew())
+|> fun (r,s) -> (s.ElapsedMilliseconds,r)
+||> printf "time: %dms\nresult: %A" 

@@ -3,6 +3,8 @@ module Prelude
 
 open System.Text.RegularExpressions
 
+type Solver<'a> = string list -> 'a * 'a 
+
 let flip f a b = f b a
 
 let foldl = Seq.fold

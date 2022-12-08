@@ -5,6 +5,12 @@ open System.Text.RegularExpressions
 
 type Solver<'a> = string list -> 'a * 'a 
 
+let toGrid2d (xs:#seq<#seq<'a>>) : ((int * int) * 'a) list = 
+    let ri y = Seq.mapi (fun x a -> ((x,y),a)) >> List.ofSeq
+    xs |> Seq.mapi ri |> Seq.concat |> List.ofSeq
+
+let asInt (c:char) = int (c)-int ('0')
+
 let flip f a b = f b a
 
 let foldl = Seq.fold

@@ -47,7 +47,13 @@ let uncurry f (a,b) = f a b
 
 let tOp = uncurry
 
+let times n f i = Seq.fold (fun s _ -> f s) i [1..n]
+
 let mapSnd f (a,b) = (a, f b)
 let mapFst f (a,b) = (f a, b)
 
 let isDigit c = System.Char.IsDigit c
+
+let inc = (+) 1
+let dec = (flip (-)) 1
+let dist (x,y) (x',y') = (x-x')*(x-x')+(y-y')*(y-y')

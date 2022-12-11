@@ -57,3 +57,7 @@ let isDigit c = System.Char.IsDigit c
 let inc = (+) 1
 let dec = (flip (-)) 1
 let dist (x,y) (x',y') = (x-x')*(x-x')+(y-y')*(y-y')
+
+let rec gcd (a:int64) (b:int64) = if b = 0 then abs a else gcd (abs b) ((abs a) % abs b)
+
+let lcm a b = (a*b) / (gcd a b)

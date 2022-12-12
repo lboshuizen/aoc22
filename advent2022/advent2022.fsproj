@@ -7,6 +7,7 @@
 
     <ItemGroup>
         <Compile Include="Prelude.fs" />
+        <Compile Include="AStar.fs" />
         <Compile Include="Template.fs" />
         <Compile Include="Day1.fs" />
         <Compile Include="Day2.fs" />
@@ -19,6 +20,7 @@
         <Compile Include="Day9.fs" />
         <Compile Include="Day10.fs" />
         <Compile Include="Day11.fs" />
+        <Compile Include="Day12.fs" />
         <Compile Include="Program.fs" />
         <Content Include="inputs\day1.txt" />
         <Content Include="inputs\day2.txt" />
@@ -30,9 +32,11 @@
         <Content Include="inputs\day9.txt" />
         <Content Include="inputs\day10.txt" />
         <Content Include="inputs\day11.txt" />
+        <Content Include="inputs\day12.txt" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="FSharp.Collections.ParallelSeq" Version="1.2.0" />
       <PackageReference Include="FSharpPlus" Version="1.3.2" />
     </ItemGroup>
 

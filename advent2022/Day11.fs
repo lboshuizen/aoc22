@@ -4,6 +4,7 @@ type Monkey = int64 list * (int64 -> int64) * int64 * int * int * int
 
 let values (m:Map<'a,'b>) = m |> Map.values |> List.ofSeq
 let keys (m:Map<'a,'b>) = m |> Map.keys |> List.ofSeq
+let inline update  (k:'k) (fu:'v -> 'v) (m:Map<'k,'v>) = Map.change k (Option.map fu) m
 
 let parse =
     let buildOp (a:string []) =
@@ -27,17 +28,18 @@ let parse =
             
             id, (items,op,div,onT,onF,0)
     
-    List.chunkBySize 7 >> List.map (Array.ofList >>  build) >> Map
+    List.chunkBySize 7 >> List.map (Array.ofList >> build) >> Map
 
-let throwTo (i,n) = Map.change n (fun (Some (xs,o,t,tf,tt,c)) -> Some (xs@[i],o,t,tf,tt,c))
-let clear mk = Map.change mk (fun (Some (items,o,d,tf,tt,c)) -> Some ([],o,d,tf,tt, c+List.length items))
+let receive mm (mk,i) = update mk (fun (items,o,d,t,f,c) -> (items@[i],o,d,t,f,c)) mm
+let clear mk = update mk (fun (items,o,d,t,f,c) -> ([],o,d,t,f,c+List.length items))
 
 let monkey f (mm:Map<int,Monkey>) mk =
     let items,op,div,wT,wF,_ = mm[mk]
-    let tf a = if a % div = 0L then (a,wT) else (a,wF)  
+    let tf a = if a % div = 0L then (wT,a) else (wF,a)  
+    let throwTo f m i = receive m (f i)
     let dest = op >> f >> tf
-    
-    items |> List.fold (fun m i -> throwTo (dest i) m) mm |> clear mk
+
+    items |> List.fold (throwTo dest) mm |> clear mk
     
 let round f mm = List.fold (monkey f) mm (keys mm)
     
@@ -47,8 +49,7 @@ let part1 = times 20 (round (flip (/) 3L) ) >>  result
 
 let part2 mm =
     let lcmOfDiv = values >> List.map (fun (_,_,div,_,_,_) -> div) >> List.fold lcm 1L
-    let cm = lcmOfDiv mm
     
-    times 10000 (round (flip (%) cm)) mm |> result
+    times 10000 (round (flip (%) (lcmOfDiv mm))) mm |> result
 
 let Solve : Solver<int64> = parse >> both part1 part2

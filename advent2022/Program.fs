@@ -9,7 +9,7 @@ let readInput (d:int)  =
 
 let go f xs = monad { return f xs }        
 
-readInput 11
-|> fun xs -> State.run (go Day11.Solve xs) (Stopwatch.StartNew())
+readInput 12
+|> fun xs -> State.run (go Day12.Solve xs) (Stopwatch.StartNew())
 |> fun (r,s) -> (s.ElapsedMilliseconds,r)
-||> printf "time: %dms\nresult: %A" 
+||> printf "time: %dms\nresult:\n %A" 

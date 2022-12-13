@@ -1,5 +1,6 @@
 ﻿open System.Diagnostics
 open  System.IO
+open System.Threading
 open FSharpPlus.Data
 open FSharpPlus.GenericBuilders
 
@@ -9,7 +10,7 @@ let readInput (d:int)  =
 
 let go f xs = monad { return f xs }        
 
-readInput 12
-|> fun xs -> State.run (go Day12.Solve xs) (Stopwatch.StartNew())
+readInput 13
+|> fun xs -> State.run (go Day13.Solve xs) (Stopwatch.StartNew())
 |> fun (r,s) -> (s.ElapsedMilliseconds,r)
 ||> printf "time: %dms\nresult:\n %A" 

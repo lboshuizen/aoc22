@@ -26,15 +26,13 @@ let numList (s:string) =
     go 1 [] |> snd |> List
 
 let rec compare a b =
-    
-    let compareNum a b = sign(a-b) 
-    
-    let compareLst l r = Seq.zip l r |>  Seq.map (uncurry compare) |> Seq.tryFind ((<>)0)
+    let compareNum l r = sign (l-r) 
+    let compareLst l r = Seq.zip l r |> Seq.map (uncurry compare) |> Seq.tryFind ((<>)0)
     
     match a, b with
     | Num l, Num r -> compareNum l r
-    | Num l, List _ -> compare (List [Num l]) b
-    | List _, Num r -> compare a (List [Num r])
+    | Num _, List _ -> compare (List [a]) b
+    | List _, Num _ -> compare a (List [b])
     | List l, List r -> match compareLst l r with
                         | None -> compareNum l.Length r.Length
                         | Some c -> c

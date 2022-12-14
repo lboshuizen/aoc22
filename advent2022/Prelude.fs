@@ -9,6 +9,8 @@ let toGrid2d (xs:#seq<#seq<'a>>) : ((int * int) * 'a) list =
     let ri y = Seq.mapi (fun x a -> ((x,y),a)) >> List.ofSeq
     xs |> Seq.mapi ri |> Seq.concat |> List.ofSeq
 
+let line2D ((x,y),(x2,y2)) = [for n in 0..max (abs (x2-x)) (abs (y2-y)) -> ((x+n*sign(x2-x)),y+n*sign(y2-y))]
+
 let asInt (c:char) = int (c)-int ('0')
 
 let flip f a b = f b a
@@ -16,6 +18,7 @@ let flip f a b = f b a
 let foldl = Seq.fold
 let foldr f = flip (List.foldBack f) // Who(??) decided to give foldBack that crazy signature
 
+let splitOnS (d:string) (s:string) = s.Split d
 let splitOn (c:char) (s:string) = s.Split c
 
 let reorder (xs:'a list list) = xs |> (List.map List.rev >> List.rev)
@@ -48,7 +51,10 @@ let uncurry f (a,b) = f a b
 let tOp = uncurry
 
 let times n f i = Seq.fold (fun s _ -> f s) i [1..n]
-
+let rec until p f i = match (p i) with
+                      | true -> i
+                      | false -> until p f (f i)
+    
 let mapSnd f (a,b) = (a, f b)
 let mapFst f (a,b) = (f a, b)
 

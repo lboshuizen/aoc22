@@ -1,6 +1,7 @@
 [<Microsoft.FSharp.Core.AutoOpen>]
 module Prelude
 
+open System.Collections.Generic
 open System.Text.RegularExpressions
 
 type Solver<'a> = string list -> 'a * 'a 
@@ -58,6 +59,8 @@ let rec until p f i = match (p i) with
 let mapSnd f (a,b) = (a, f b)
 let mapFst f (a,b) = (f a, b)
 
+let minus n a = a-n
+
 let isDigit c = System.Char.IsDigit c
 
 let inc = (+) 1
@@ -67,3 +70,21 @@ let dist (x,y) (x',y') = (x-x')*(x-x')+(y-y')*(y-y')
 let rec gcd (a:int64) (b:int64) = if b = 0 then abs a else gcd (abs b) ((abs a) % abs b)
 
 let lcm a b = (a*b) / (gcd a b)
+
+let memo f =
+    let cache = Dictionary<_,_>()
+    fun c ->
+        match cache.TryGetValue c with
+        | true, v -> v
+        | _ -> let value = f c
+               cache.Add(c, value)
+               value
+
+let private ass s c v = match (v=c) with
+                        | true -> ()
+                        | false -> printfn $"%s{s} is incorrect: expected %A{c} got %A{v}"
+                                   assert false
+
+let shouldBe (c1:'a) (c2:'b) (a:'a,b:'b) = ass "part1" c1 a
+                                           ass "part2" c2 b
+                                           (a,b)

@@ -6,6 +6,7 @@ let dim = both (Seq.maxBy fst >> fst) (Seq.maxBy snd >> snd)
 
 let parse = List.map ((splitOnS "->" >> Array.map ((splitOn ',') >> fun a -> (int a[0],int a[1]) )) >> Array.pairwise >> Array.map line2D)
             >> Array.concat >> List.concat >> Set >> both id dim
+            
 let source = (500,0)
 let blocked = flip Set.contains
 let inVoid (s,v) = Set.exists (snd >> (=) v) s

@@ -12,7 +12,7 @@ let toGrid2d (xs:#seq<#seq<'a>>) : ((int * int) * 'a) list =
 
 let line2D ((x,y),(x2,y2)) = [for n in 0..max (abs (x2-x)) (abs (y2-y)) -> ((x+n*sign(x2-x)),y+n*sign(y2-y))]
 
-let asInt (c:char) = int (c)-int ('0')
+let asInt (c:char) = int c - int '0'
 
 let flip f a b = f b a
 
@@ -66,6 +66,7 @@ let isDigit c = System.Char.IsDigit c
 let inc = (+) 1
 let dec = (flip (-)) 1
 let dist (x,y) (x',y') = (x-x')*(x-x')+(y-y')*(y-y')
+let manhattan (x,y) (x',y') = abs (x-x') + abs (y-y')
 
 let rec gcd (a:int64) (b:int64) = if b = 0 then abs a else gcd (abs b) ((abs a) % abs b)
 
@@ -81,9 +82,9 @@ let memo f =
                value
 
 let private ass s c v = match (v=c) with
-                        | true -> ()
-                        | false -> printfn $"%s{s} is incorrect: expected %A{c} got %A{v}"
+                        | false -> printfn $"%s{s} is incorrect: expected <%A{c}> got <%A{v}>"
                                    assert false
+                        | _ -> ()
 
 let shouldBe (c1:'a) (c2:'b) (a:'a,b:'b) = ass "part1" c1 a
                                            ass "part2" c2 b

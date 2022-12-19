@@ -18,10 +18,10 @@ let moveTail =
 let move f ((h,t),xs) = moveTail (f <!> h,t) |> track xs 
 
 let step s = function
-             | "U",n -> times n (move (id,inc)) s
-             | "D",n -> times n (move (id,dec)) s
-             | "R",n -> times n (move (inc,id)) s
-             | "L",n -> times n (move (dec,id)) s
+             | "U",n -> times n (move (id,succ)) s
+             | "D",n -> times n (move (id,pred)) s
+             | "R",n -> times n (move (succ,id)) s
+             | "L",n -> times n (move (pred,id)) s
              | _ -> failwith "wtf"
                                  
 let trail = List.fold step (((0,0),(0,0)),[])>> snd >> List.rev                  

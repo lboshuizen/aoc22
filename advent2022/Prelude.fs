@@ -63,8 +63,9 @@ let minus n a = a-n
 
 let isDigit c = System.Char.IsDigit c
 
-let inc = (+) 1
-let dec = (flip (-)) 1
+let inline succ n = n+1
+let inline pred n = n-1
+
 let dist (x,y) (x',y') = (x-x')*(x-x')+(y-y')*(y-y')
 let manhattan (x,y) (x',y') = abs (x-x') + abs (y-y')
 

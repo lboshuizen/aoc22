@@ -13,6 +13,7 @@ let toGrid2d (xs:#seq<#seq<'a>>) : ((int * int) * 'a) list =
 let line2D ((x,y),(x2,y2)) = [for n in 0..max (abs (x2-x)) (abs (y2-y)) -> ((x+n*sign(x2-x)),y+n*sign(y2-y))]
 
 let asInt (c:char) = int c - int '0'
+let trim (s:string) = s.Trim()
 
 let flip f a b = f b a
 

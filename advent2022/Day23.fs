@@ -27,27 +27,25 @@ let look = [(pred,pred);(id,pred);(succ,pred);(pred,id);(succ,id);(pred,succ);(i
 let props = [snd >> pred >> onRow;snd >> succ >> onRow;fst >> pred >>onCol;fst >> succ >> onCol] // N,S,W,E
 let moves = [(<!>)(id,pred);(<!>)(id,succ);(<!>)(pred,id);(<!>)(succ,id)]
 
-let propose ((g,ds,mv):State) p =
-    let around = List.map (flip (<!>) p) look |> List.filter (flip Set.contains g)
-    let prop (x,y) xs = ds |> Seq.map ((<*>) (x,y) >> (<*>) xs) |> Seq.tryFindIndex ((=) true)
+let propose ((grid,props,moves):State) p =
+    let around = List.map (flip (<!>) p) look |> List.filter (flip Set.contains grid)
+    let prop (x,y) xs = props |> Seq.map ((<*>) (x,y) >> (<*>) xs) |> Seq.tryFindIndex ((=) true)
     match around with
     | [] -> None
-    | xs -> prop p xs |> Option.map (fun d -> p,p <*> mv[d])
+    | xs -> prop p xs |> Option.map (fun d -> p,p <*> moves[d])
 
 let duplicates = PSeq.groupBy snd >> PSeq.filter (snd >> Seq.length >> flip (>) 1) >> Seq.map fst >> Set
 
 let notCollided xs = xs |> PSeq.filter (snd >> flip Set.contains (duplicates xs) >> not)
 
-let round (g,ds,mv) =
-    let replace (src,dst) = Set.remove src >> Set.add dst
-    let next = g |> PSeq.map (propose (g,ds,mv)) |> PSeq.choose id
-               |> notCollided |> PSeq.fold (flip replace) g
-             
-    next, rotate ds, rotate mv                 
+let round (grid,ds,mv) =
+    let replaceOn (src,dst) = Set.remove src >> Set.add dst
+    let g' = grid |> PSeq.map (propose (grid,ds,mv)) |> PSeq.choose id |> notCollided |> Seq.fold (flip replaceOn) grid
+    g', rotate ds, rotate mv                 
 
-let part1 s = times 10 round (s,props,moves) |> fst3 |> both id area |> fun (s,a) -> a - Set.count s
+let part1 grid = times 10 round (grid,props,moves) |> fst3 |> both id area |> fun (s,a) -> a - Set.count s
 
-let part2 s = let next ((_,i),(s,ds,mv)) = (s,succ i),round (s,ds,mv)
-              until (fun ((s,_),(s',_,_)) -> s'=s) next ((Set.empty,0),(s,props,moves)) |> fst |> snd                         
+let part2 grid = let next ((_,i),(s,ds,mv)) = (s,succ i),round (s,ds,mv)
+                 until (fun ((s,_),(s',_,_)) -> s'=s) next ((Set.empty,0),(grid,props,moves)) |> fst |> snd                         
 
 let Solve : Solver<int> = parse >> both part1 part2 >> shouldBe 3996 908

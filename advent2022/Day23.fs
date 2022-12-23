@@ -10,9 +10,10 @@ let rotate = function
              | [x] -> [x]
              | x::xs -> xs @ [x]
 
-type dirs = (int * int -> (int * int) list -> bool) list
-type moves = (int * int -> int * int) list
-type State = Set<int*int> * dirs * ((int * int -> int * int) list)
+type xy = int * int
+type fProps = (xy -> xy list -> bool) list
+type fProj = (xy -> xy) list
+type State = Set<xy> * fProps * fProj
 
 let parse = List.map List.ofSeq >> toGrid2d >> List.filter (snd >> (=) '#') >> List.map fst >> Set
 

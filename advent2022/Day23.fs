@@ -17,6 +17,9 @@ type State = Set<xy> * fProps * fProj
 
 let parse = List.map List.ofSeq >> toGrid2d >> List.filter (snd >> (=) '#') >> List.map fst >> Set
 
+let area s = let (x,x'),(y,y') = s |> both (Seq.map fst >> both Seq.min Seq.max) (Seq.map snd >> both Seq.min Seq.max)
+             (x'-x+1)*(y'-y+1)
+
 let onRow y = Seq.exists (snd >> (=) y) >> not
 let onCol x = Seq.exists (fst >> (=) x) >> not
 
@@ -24,24 +27,23 @@ let look = [(pred,pred);(id,pred);(succ,pred);(pred,id);(succ,id);(pred,succ);(i
 let props = [snd >> pred >> onRow;snd >> succ >> onRow;fst >> pred >>onCol;fst >> succ >> onCol] // N,S,W,E
 let moves = [(<!>)(id,pred);(<!>)(id,succ);(<!>)(pred,id);(<!>)(succ,id)]
 
-let propose (g,d,_) p = let around = List.map (flip (<!>) p) look |> List.filter (flip  Set.contains g)
-                        let prop (x,y) xs = d |> List.map ((<*>) (x,y) >> (<*>) xs) |> Seq.tryFindIndex ((=) true)
-                        match around with
-                        | [] -> None
-                        | xs -> prop p xs
+let propose ((g,ds,mv):State) p =
+    let around = List.map (flip (<!>) p) look |> List.filter (flip Set.contains g)
+    let prop (x,y) xs = ds |> Seq.map ((<*>) (x,y) >> (<*>) xs) |> Seq.tryFindIndex ((=) true)
+    match around with
+    | [] -> None
+    | xs -> prop p xs |> Option.map (fun d -> p,p <*> mv[d])
 
-let project ((g,ds,mv):State) p = propose (g,ds,mv) p |> Option.map (fun d -> p <*> mv[d]) |> fun p' -> p,p'
+let duplicates = PSeq.groupBy snd >> PSeq.filter (snd >> Seq.length >> flip (>) 1) >> Seq.map fst >> Set
 
-let duplicates = PSeq.groupBy snd >> Seq.filter (snd >> Seq.length >> flip (>) 1) >> Seq.map fst >> Set
+let notCollided xs = xs |> PSeq.filter (snd >> flip Set.contains (duplicates xs) >> not)
 
-let collided xs = xs |> List.partition (snd >> flip Set.contains (duplicates xs))
-
-let round (g,ds,mv) = let move,idle = g |> PSeq.map (project (g,ds,mv)) |> List.ofSeq |> List.partition (snd >> Option.isSome)
-                      let col,ok = move |> List.map (mapSnd Option.get) |> collided
-                      (List.map fst idle) @ (List.map fst col) @ (List.map snd ok) |> Set, rotate ds, rotate mv
-
-let area s = let (x,x'),(y,y') = s |> both (Seq.map fst >> both Seq.min Seq.max) (Seq.map snd >> both Seq.min Seq.max)
-             (x'-x+1)*(y'-y+1)
+let round (g,ds,mv) =
+    let replace (src,dst) = Set.remove src >> Set.add dst
+    let next = g |> PSeq.map (propose (g,ds,mv)) |> PSeq.choose id
+               |> notCollided |> PSeq.fold (flip replace) g
+             
+    next, rotate ds, rotate mv                 
 
 let part1 s = times 10 round (s,props,moves) |> fst3 |> both id area |> fun (s,a) -> a - Set.count s
 
